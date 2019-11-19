@@ -1,6 +1,6 @@
 <template>
   <div>
-  <el-container>
+<!--  <el-container>
     <el-header>https://element.eleme.cn/#/zh-CN</el-header>
     <el-main>Main</el-main>
   </el-container>
@@ -38,19 +38,21 @@
   <el-container>
     <el-aside width="200px"><div>
       <el-link icon="el-icon-edit">编辑</el-link>
-      <el-link><i class="el-icon-view el-icon--right">查看</i> </el-link>
+      <el-link><i class="el-icon-view el-icon&#45;&#45;right">查看</i> </el-link>
     </div></el-aside>
     <el-container>
       <el-header>Header</el-header>
       <el-main>Main</el-main>
     </el-container>
-  </el-container>
+  </el-container>-->
 
   <el-container>
     <el-aside width="200px">Aside</el-aside>
     <el-container>
       <el-header>Header</el-header>
-      <el-main>Main</el-main>
+      <el-main>
+        Main
+      </el-main>
       <el-footer>Footer</el-footer>
     </el-container>
   </el-container>
@@ -97,7 +99,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
   .el-header, .el-footer {
     background-color: #B3C0D1;
@@ -124,12 +125,5 @@ export default {
     margin-bottom: 40px;
   }
 
-  .el-container:nth-child(5) .el-aside,
-  .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-  }
 
-  .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-  }
 </style>
