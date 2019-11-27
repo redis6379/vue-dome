@@ -25,7 +25,8 @@
 </template>
 
 <script>
-  const token = 'adadaa';
+  import { requestLogin } from "../../network/home";
+  //const token = 'adadaa';
   export default {
     name: "Login",
     data(){
@@ -50,6 +51,7 @@
         },
       };
     },
+    created(){},
     methods:{
       /*登录*/
       login(){
@@ -57,20 +59,28 @@
           /*判断验证是否通过*/
           if(!valid) return;
           /*验证通过请求服务器*/
-          this.$message.success('登录成功');
-          /*保存token的信息*/
-          window.sessionStorage.setItem("token",token);
-          /*等待2秒进行页面跳转*/
-          setTimeout(() => {
-            this.$router.push('/home');
-          }, 2000);
+          requestLogin(this.loginForm).then(res =>{
+            console.log(res);
+            if(!(res.code === 0)){
+              this.$message.error(res.msg);
+              return;
+            }
+              this.$message.success(res.msg);
+              /*保存token的信息*/
+              window.sessionStorage.setItem("token",res.code.token);
+              /*等待2秒进行页面跳转*/
+              setTimeout(() => {this.$router.push('/home');}, 2000);
+          }).catch(err => {
+            console.log(err);
+            this.$message.error(err);
+          });
         });
       },
       /*重置*/
       reset(){
         this.$refs.loginFormRef.resetFields();
-      }
-    }
+      },
+    },
   }
 </script>
 

@@ -4,12 +4,12 @@ export default function axios(option) {
   return new Promise((resolve, reject)=>{
     // 1.创建axios的实例
     const instance = originAxios.create({
-      baseURL: 'http://123.207.32.32:8000',
-      timeout: 5000
+      baseURL: 'http://www.tp6.0.com',
+      //timeout: 5000
     });
 
     // 配置请求拦截
-    instance.interceptors.request.use(config => {
+   instance.interceptors.request.use(config => {
       // console.log('来到了request拦截success中');
       // 1.当发送网络请求时, 在页面中添加一个loading组件, 作为动画
 
@@ -28,7 +28,7 @@ export default function axios(option) {
 
     // 配置响应拦截
     instance.interceptors.response.use(response => {
-      // console.log('来到了response拦截success中');
+       //console.log('来到了response拦截success中');
       return response.data
     }, err => {
       //console.log('来到了response拦截failure中');

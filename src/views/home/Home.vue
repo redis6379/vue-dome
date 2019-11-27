@@ -29,25 +29,33 @@
     </el-header>
     <el-container>
       <!--侧边菜单栏-->
-      <el-aside width="200px">
+      <el-aside :width="collapse ? '64px' : '200px'">
         <el-menu background-color="#545c64"
                  text-color="#fff"
                  active-text-color="#ffd04b"
                  router
-                 :default-active="Active">
+                 :default-active="Active"
+                 :unique-opened="true"
+                 :collapse="collapse"
+                 :collapse-transition="false">
+          <div class="collapses" @click="zhedie">
+             <span>
+               |||
+             </span>
+          </div>
           <!--一级菜单-->
-          <el-submenu index="1">
+          <el-submenu :index="item.id + ''" v-for="item in datas.name" :key="item.id">
             <!--菜单的模板-->
             <template slot="title">
               <!--图标-->
-              <i class="el-icon-location"></i>
-             <!--文本-->
-              <span>用户管理</span>
+              <i :class="item.loca"></i>
+              <!--文本-->
+              <span>{{item.names}}</span>
             </template>
-            <el-menu-item :index="'/users'" @click="setActive('/users')">
+            <el-menu-item :index="subItem.path" @click="setActive('/users')" v-for="subItem in item.ser" :key="subItem.id">
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>用户列表</span>
+                <i :class="subItem.loca"></i>
+                <span>{{subItem.names}}</span>
               </template >
             </el-menu-item>
           </el-submenu>
@@ -64,31 +72,45 @@
             <el-breadcrumb-item>活动详情</el-breadcrumb-item>
           </el-breadcrumb>
           <!--路由的显示内容-->
-          <router-view></router-view>
+          <router-view/>
         </el-main>
         <!--底部部分-->
         <el-footer>
-          Footer
+          rtrtgtr
         </el-footer>
       </el-container>
     </el-container>
   </el-container>
 </template>
 <script>
-  import { getAll } from "../../network/home";
+  import { getIndex } from "../../network/home";
   export default {
     name: "Home",
     data(){
       return {
+        collapse:false,
         Active:'',
+        datas:[],
       };
     },
-    created(){
-      getAll(1,2).then(res =>{
-          res.data;
-      });
-      this.Active = window.sessionStorage.getItem('Active');
-    },
+     created(){
+       getIndex().then(res =>{
+         if(!res.data.code === 0 ){
+           this.$notify({
+             //title: '成功',
+             message: res.data.msg,
+             type: 'error',
+             duration:1000,
+           });
+           return;
+         }
+        this.datas = res.data;
+       }).catch( err => {
+          console.log(err);
+       });
+      this.Active =  window.sessionStorage.getItem('Active');
+     },
+
     methods:{
       handleCommand(command) {
         switch (command) {
@@ -103,6 +125,9 @@
             this.$router.push('/login');
             break;
         }
+      },
+      zhedie(){
+        this.collapse = !this.collapse;
       },
       setActive(user){
         this.Active = user;
@@ -162,5 +187,16 @@
 
   .el-menu {
     border-right: solid 0 #e6e6e6;
+  }
+  .collapses{
+    width: 100%;
+    height: 40px;
+    background-color: cadetblue;
+    text-align: center;
+    cursor: pointer;
+  }
+  .collapses span{
+    font-size: 25px;
+    color: #ffffff;
   }
 </style>

@@ -1,11 +1,16 @@
 import axios from "./axios";
 
-export function getAll(type, page) {
-    return axios({
-      url: '/home/data',
-      params: {
-        type,
-        page
+    export function getIndex() {
+        return axios({
+          url: "/api/v1/homes",
+        });
       }
-    });
-  }
+
+    export function requestLogin(type) {
+        return axios({
+            url:'/api/v1/home',
+            params: {
+                type,
+            }
+        });
+    }
