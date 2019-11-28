@@ -1,26 +1,30 @@
 <template>
   <div class="users-list">
+    <!--卡片区域-->
     <el-card class="box-card">
-      <el-row gutter="30">
-        <el-col span="7">
+
+      <!--输入搜索区域-->
+      <el-row :gutter="30">
+        <el-col :span="7">
             <el-input placeholder="请输入内容">
               <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
         </el-col>
-        <el-col span="4">
+        <el-col :span="4">
           <el-button type="primary">点击添加</el-button>
         </el-col>
       </el-row>
+
       <!--用户区域-->
       <el-row>
         <el-col>
-          <el-table :data="tableData" border>
+          <el-table :data="usersLists" border>
             <el-table-column type="index"></el-table-column>
-            <el-table-column prop="date" label="日期"></el-table-column>
-            <el-table-column prop="name" label="名字"></el-table-column>
-            <el-table-column prop="address" label="地址"></el-table-column>
+            <el-table-column prop="username" label="名字"></el-table-column>
+            <el-table-column prop="user_ip" label="地址"></el-table-column>
+            <el-table-column prop="user_email" label="邮箱"></el-table-column>
             <el-table-column label="状态">
-              <!--用自定义插槽进行状态的显示-->
+              <!--自定义状态-->
               <template slot-scope="scope">
                 <el-switch
                         v-model="scope.row.value"
@@ -29,7 +33,8 @@
                 </el-switch>
               </template>
             </el-table-column>
-            <!--用自定义插槽进行操作-->
+
+            <!--自定义操作-->
             <el-table-column label="操作" width="180px">
               <template slot-scope="">
                 <el-tooltip effect="dark" content="编辑" placement="top" :enterable="false">
@@ -46,53 +51,83 @@
           </el-table>
         </el-col>
       </el-row>
-      <!--分页的实现-->
+
+      <!--分页的区域-->
       <el-pagination
               background
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :current-page="currentPage4"
-              :page-sizes="[100, 200, 300, 400]"
-              :page-size="100"
+              :current-page="pageInfo.pagenum"
+              :page-sizes="[10,20,30,40,50]"
+              :page-size="pageInfo.pagesize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="400">
+              :total="total">
       </el-pagination>
     </el-card>
   </div>
 </template>
 
 <script>
+  import { getUsersInfo,updateStsuts } from "../../network/user";
+
   export default {
     name: "Users",
     data(){
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          value:true,
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄',
-          value:true,
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          value:false,
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄',
-          value:true,
-        }]
+        pageInfo:{
+          quire:'',
+          /*当前页数*/
+          pagenum:1,
+          /*当前每页显示条数*/
+          pagesize:4,
+      },
+        /*用户的数据列表*/
+        usersLists:[],
+       /* 总共的数据条数*/
+        total:100,
       };
     },
+    created(){
+      /*请求用户的数据*/
+      this.getInitUserInfo();
+    },
     methods:{
+      /*初始化获取用户的数据 API*/
+      getInitUserInfo(type){
+        getUsersInfo(type,this.pageInfo.pagenum,this.pageInfo.pagesize).then(res => {
+          if(!res.code === 0 ){
+            this.$message.error('数据补存在');
+            return;
+          }
+          /*用户列*/
+          this.usersLists = res.data.userLists;
+          /*用户总条数*/
+          this.total = res.data.total;
+        }).catch(err =>{
+          console.log(err);
+        });
+      },
+      /* 状态操执行事件 API*/
       getchange(userInfo){
-        console.log(userInfo);
-      }
+        /*请求后台更改操作的状*/
+        updateStsuts(userInfo.value).then(res =>{
+          console.log(res);
+          console.log(userInfo);
+        }).catch(err => {
+          console.log(err);
+        });
+        //console.log(userInfo.value);
+      },
+      /*每页显示的条数*/
+      handleCurrentChange(Page){
+        this.pageInfo.pagenum = Page;
+        this.getInitUserInfo();
+      },
+      /*当前的页数*/
+      handleSizeChange(Size){
+        this.pageInfo.pagesize = Size;
+        this.getInitUserInfo();
+      },
     },
   }
 </script>
