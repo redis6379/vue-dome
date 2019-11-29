@@ -25,11 +25,9 @@ const routes = [
       { path: '/userInfo', component: UserInfo },
         //用户列表
       { path: '/users', component: Users },
-
-    ]
-  },
-
-];
+      ]
+    },
+  ];
   //创建路由
 const router = new VueRouter({
   routes,
